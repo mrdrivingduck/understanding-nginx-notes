@@ -44,7 +44,7 @@ Nginx 中除了少量核心代码，其它一切皆模块。这种高度模块�
       ngx_str_t name; // 核心模块名称
       void *(*create_conf) (ngx_cycle_t *cycle); // 解析配置项前由 Nginx 框架调用
       char *(*init_conf) (ngx_cycle_t *cycle, void *conf); // 配置项解析完毕后，通过配置项初始化模块
-  };
+  } ngx_core_module_t;
   ```
 
   每个核心模块又可以定义各自的新类型：
