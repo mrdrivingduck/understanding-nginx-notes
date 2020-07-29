@@ -1,5 +1,5 @@
 # understanding-nginx-notes
-🗜️ Notes of reading Understanding Nginx.
+🗜️ Notes of reading *Understanding Nginx*.
 
 Created by : Mr Dk.
 
