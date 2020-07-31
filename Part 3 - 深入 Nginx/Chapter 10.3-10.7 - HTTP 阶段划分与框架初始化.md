@@ -345,7 +345,7 @@ ngx_http_core_access_phase(ngx_http_request_t *r, ngx_http_phase_handler_t *ph)
 }
 ```
 
-返回值含义如代码中所示，就不列表了。这里可以看到，处理流程与配置文件中的 `satisfy` 配置项有着密切关系。
+返回值含义如代码中所示，就不列表了。这里可以看到，处理流程与配置文件中的 `satisfy` 配置项有着密切关系。`satisfy all` 意味着当前阶段的所有 `handler` 必须共同作用于这一个请求才行，因此在一个模块返回 `NGX_OK` 后，还要继续调用下一个模块的 `handler`；如果有一个 `handler` 没有返回 `NGX_OK`，那么就说明无权限访问，请求结束。`satisfy any` 的逻辑按照类似的方式理解即可。
 
 ### 10.6.9 NGX_HTTP_POST_ACCESS_PHASE 阶段
 
@@ -408,7 +408,11 @@ ngx_http_core_post_access_phase(ngx_http_request_t *r,
 >
 > 如果同时设置了两种处理方式，第二种方式的优先级更高，第一种方式的处理函数将不会生效。如果有多个 HTTP 模块都试图用第二种方式介入这一阶段，那么后面的配置项将有可能覆盖前面的配置项中的 `handler` 指针。
 
-该阶段的 `checker()` 函数如下 (暂未读懂，之后再加注释)：
+该阶段的 `checker()` 函数如下：
+
+> 为了加快处理速度，HTTP 框架在 `NGX_HTTP_FIND_CONFIG_PHASE` 阶段就把请求 URL location 块中的 `handler` 设置到 `ngx_http_request_t` 结构体中的 `content_handler` 中。
+>
+> 如果设置了 `content_handler`，就优先以 `content_handler` 为准。
 
 ```c
 ngx_int_t
@@ -419,7 +423,9 @@ ngx_http_core_content_phase(ngx_http_request_t *r,
     ngx_int_t  rc;
     ngx_str_t  path;
 
+    // 优先使用 location 块中指定的处理函数
     if (r->content_handler) {
+        // 设置请求的写事件处理函数，防止 HTTP 模块异步处理请求时有其它 HTTP 模块在向客户端发送响应
         r->write_event_handler = ngx_http_request_empty_handler;
         ngx_http_finalize_request(r, r->content_handler(r));
         return NGX_OK;
@@ -428,8 +434,10 @@ ngx_http_core_content_phase(ngx_http_request_t *r,
     ngx_log_debug1(NGX_LOG_DEBUG_HTTP, r->connection->log, 0,
                    "content phase: %ui", r->phase_handler);
 
+    // 如果没有 content_handler，那么再使用惯用方式
     rc = ph->handler(r);
 
+    // 没有返回 NGX_DECLINED，那么就不再执行该阶段的其它 handler
     if (rc != NGX_DECLINED) {
         ngx_http_finalize_request(r, rc);
         return NGX_OK;
@@ -437,8 +445,11 @@ ngx_http_core_content_phase(ngx_http_request_t *r,
 
     /* rc == NGX_DECLINED */
 
+    // NGX_DECLINED 有点 "意犹未尽" 的意思，想立刻执行下一个函数
     ph++;
 
+    // 确认当前函数是否是当前阶段的最后一个函数
+    // ?
     if (ph->checker) {
         r->phase_handler++;
         return NGX_AGAIN;
@@ -446,6 +457,7 @@ ngx_http_core_content_phase(ngx_http_request_t *r,
 
     /* no content handler was found */
 
+    // HTTP 403
     if (r->uri.data[r->uri.len - 1] == '/') {
 
         if (ngx_http_map_uri_to_path(r, &path, &root, 0) != NULL) {
@@ -459,6 +471,7 @@ ngx_http_core_content_phase(ngx_http_request_t *r,
 
     ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "no handler found");
 
+    // HTTP 404
     ngx_http_finalize_request(r, NGX_HTTP_NOT_FOUND);
     return NGX_OK;
 }
