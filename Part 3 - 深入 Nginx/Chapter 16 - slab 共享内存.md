@@ -10,11 +10,11 @@ Nanjing, Jiangsu, China
 
 ## 16.1 操作 slab 共享内存的方法
 
-* `void ngx_slab_init(ngx_slab_pool_t *pool);` - 初始化共享内存 (由 Nginx 框架自动调用)
-* `void *ngx_slab_alloc(ngx_slab_pool_t *pool, size_t size);` - 加锁保护的内存分配函数
-* `void *ngx_slab_alloc_locked(ngx_slab_pool_t *pool, size_t size);` - 不加锁保护的内存分配函数
-* `void ngx_slab_free(ngx_slab_pool_t *pool, void *p);` - 加锁保护的内存释放函数
-* `void ngx_slab_free_locked(ngx_slab_pool_t *pool, void *p);` 不加锁保护的内存释放函数
+- `void ngx_slab_init(ngx_slab_pool_t *pool);` - 初始化共享内存 (由 Nginx 框架自动调用)
+- `void *ngx_slab_alloc(ngx_slab_pool_t *pool, size_t size);` - 加锁保护的内存分配函数
+- `void *ngx_slab_alloc_locked(ngx_slab_pool_t *pool, size_t size);` - 不加锁保护的内存分配函数
+- `void ngx_slab_free(ngx_slab_pool_t *pool, void *p);` - 加锁保护的内存释放函数
+- `void ngx_slab_free_locked(ngx_slab_pool_t *pool, void *p);` 不加锁保护的内存释放函数
 
 由于 slab 大部分时间都要跨进程通信，因此不加锁的分配、释放函数较少使用。
 
@@ -39,13 +39,13 @@ struct ngx_shm_zone_s {
 
 动态管理内存面对的主要问题：
 
-* 时间上，使用者随时可能分配内存、释放内存
-* 空间上，每次申请分配内存的大小随机
+- 时间上，使用者随时可能分配内存、释放内存
+- 空间上，每次申请分配内存的大小随机
 
 这两个问题使得内存中会产生碎片，从而导致内存的浪费。常见内存分配算法的两种设计方向：
 
-* First-fit - 首次适应，从头遍历空闲内存块链表，找到第一个符合需求的内存块 (快，但可能产生碎片)
-* Best-fit - 找到与所需分配的内存最为匹配的内存块 (遍历慢些，但是产生碎片的概率小)
+- First-fit - 首次适应，从头遍历空闲内存块链表，找到第一个符合需求的内存块 (快，但可能产生碎片)
+- Best-fit - 找到与所需分配的内存最为匹配的内存块 (遍历慢些，但是产生碎片的概率小)
 
 Nginx 基于 best-fit 的思路分配内存，但是需要以更快的速度找到合适大小的内存。Nginx 假定所有需要使用 slab 内存的模块请求分配的内存都不超过 4KB。基于这个假设，Nginx 中的内存块分配方法如下：
 
@@ -199,6 +199,3 @@ ngx_slab_alloc_pages(ngx_slab_pool_t *pool, ngx_uint_t pages)
 ---
 
 在内存分配和释放的过程中，Nginx 大量使用了位操作来提高性能。
-
----
-

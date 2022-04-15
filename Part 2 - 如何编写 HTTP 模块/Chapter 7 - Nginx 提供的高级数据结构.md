@@ -54,23 +54,23 @@ typedef struct {
 
 这种设计的优势：
 
-* 链表中存储的元素比较灵活 (因为 `size` 可以在链表创建时任意指定)
-* ...?
+- 链表中存储的元素比较灵活 (因为 `size` 可以在链表创建时任意指定)
+- ...?
 
 创建链表时，需要在参数中传入内存池对象指针。
 
-* `ngx_list_create()` - 创建新的链表
-* `ngx_list_init()` - 初始化一个已有链表
-* `ngx_list_push()` - 添加新的元素
-* 遍历链表不需要特定接口，可以直接根据上图中的数据结构完成
+- `ngx_list_create()` - 创建新的链表
+- `ngx_list_init()` - 初始化一个已有链表
+- `ngx_list_push()` - 添加新的元素
+- 遍历链表不需要特定接口，可以直接根据上图中的数据结构完成
 
 ## 7.4 双向链表
 
 链表的优势在于，能够高效执行 **插入、删除、合并** 的操作。因为只需要修改指针的指向即可，很适合频繁修改容器的场合。Nginx 中的 `ngx_queue_t` 双向链表有以下特性：
 
-* 实现了排序
-* 不负责链表元素所占内存的分配
-* 支持两个链表的合并
+- 实现了排序
+- 不负责链表元素所占内存的分配
+- 支持两个链表的合并
 
 双向链表的实现只使用了一个数据结构：
 
@@ -103,7 +103,7 @@ struct ngx_array_s {
     ngx_uint_t nelts; // 数组中已有元素个数
     size_t size; // 数组元素占用内存的大小
     ngx_uint_t nalloc; // 数组容量
-    
+
     ngx_pool_t *pool; // 内存池
 }
 ```
@@ -112,10 +112,10 @@ struct ngx_array_s {
 
 1. 如果内存池中剩余空间大于等于本次需要新增的空间 (1 或 n)，那么直接扩充 (1 或 n)
 2. 如果内存池剩余空间小于本次需要新增的空间
-   * 对 `ngx_array_push()` 来说，会将原先的数组扩容一倍
-   * 对 `ngx_array_push_n()` 来说
-     * 如果 n 小于原先数组的容量，那么扩容一倍
-     * 如果 n 大于原先数组的容量，那么扩容到 2 * n 的容量
+   - 对 `ngx_array_push()` 来说，会将原先的数组扩容一倍
+   - 对 `ngx_array_push_n()` 来说
+     - 如果 n 小于原先数组的容量，那么扩容一倍
+     - 如果 n 大于原先数组的容量，那么扩容到 2 \* n 的容量
 
 这里体现了 Nginx 预估用户行为的设计思想。另外，对于内存池中的剩余空间不够的扩容，新扩容的动态数组将位于新的内存块上，这里牵扯到数据的复制，可能会耗时较长。
 
@@ -165,11 +165,11 @@ struct ngx_rbtree_s {
 
 Nginx 已经帮用户实现了三种添加元素的函数：
 
-* `ngx_rbtree_insert_value()` - 向红黑树中添加数据结点，每个结点的 key 必须唯一
+- `ngx_rbtree_insert_value()` - 向红黑树中添加数据结点，每个结点的 key 必须唯一
 
-* `ngx_rbtree_insert_timer_value()` - 向红黑树中添加结点，每个结点的 key 表示时间或时间差
+- `ngx_rbtree_insert_timer_value()` - 向红黑树中添加结点，每个结点的 key 表示时间或时间差
 
-* `ngx_str_rbtree_insert_value()` - 第一排序依据依然为 key，第二排序依据为结点字符串，因此结点结构体必须为：
+- `ngx_str_rbtree_insert_value()` - 第一排序依据依然为 key，第二排序依据为结点字符串，因此结点结构体必须为：
 
   ```c
   typedef struct {
@@ -217,7 +217,7 @@ typedef struct {
 
 Hash 表的理论检索、插入复杂度为 O(1)。在 Nginx 中，各种 hash 表的 key 以 **字符串** 为主。Nginx 封装了 hash 表容器，以支持主机名称的前通配符和后通配符。
 
-既然是 hash 表就一定会有碰撞，解决碰撞的方式有很多种。Nginx 采用 *开放寻址法*，如果发现冲突，则依次检查其后的每一个槽，直到找到一个空槽来存放这个元素。每一个槽的结构定义如下：
+既然是 hash 表就一定会有碰撞，解决碰撞的方式有很多种。Nginx 采用 _开放寻址法_，如果发现冲突，则依次检查其后的每一个槽，直到找到一个空槽来存放这个元素。每一个槽的结构定义如下：
 
 ```c
 typedef struct {
@@ -248,15 +248,15 @@ typedef ngx_uint_t (*ngx_hash_key_pt) (u_char *data, size_t len);
 
 Nginx 自身提供了两种基本的 hash 计算方法，假定了 key 是字符串：
 
-* `ngx_hash_key` - 使用 [*BKDR*](https://zhuanlan.zhihu.com/p/25855753) 算法将任意长度的字符串映射为整型
-* `ngx_hash_key_lc` - 将字符串全部转换为小写，再使用 BKDR 算法
+- `ngx_hash_key` - 使用 [_BKDR_](https://zhuanlan.zhihu.com/p/25855753) 算法将任意长度的字符串映射为整型
+- `ngx_hash_key_lc` - 将字符串全部转换为小写，再使用 BKDR 算法
 
 ### 7.8.1 支持通配符
 
 Nginx 中，hash 表的 key 经常是 URI 域名，有的域名中包含前置或后置的通配符。Nginx 会将域名中去除通配符后的字符串保存在专门的前置或后置通配符的 hash 表中，并使用专门的方法检索前置或后置通配符。
 
-* 对 `www.test.*`，后置通配符 hash 表中存储的 key 为 `www.test.`
-* 对 `*.test.com`，前置通配符 hash 表中存储的 key 为 `com.test.`
+- 对 `www.test.*`，后置通配符 hash 表中存储的 key 为 `www.test.`
+- 对 `*.test.com`，前置通配符 hash 表中存储的 key 为 `com.test.`
 
 Nginx 中对普通的 hash 表做了一层简单的封装，以支持前置或后置通配符：
 
@@ -278,6 +278,3 @@ typedef struct {
 ```
 
 可以看到，用了三个 hash 表来保存所有的主机名。在查询元素时，会依次按照从上到下的顺序查询 hash 表。因此，当一个 key 同时匹配三个 hash 表时，一定会返回精确匹配的 hash 表中的元素。三个 hash 表本身由动态数组实现。
-
----
-

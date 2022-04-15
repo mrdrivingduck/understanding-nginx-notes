@@ -53,9 +53,9 @@ struct ngx_module_s {
 
 为了定义一个新的核心模块，要满足三个要素：
 
-* 模块类型 `type`
-* 模块感兴趣的配置项 `commands`
-* 实现核心模块的通用接口 `ngx_core_module_t` 于 `ctx` 指针中
+- 模块类型 `type`
+- 模块感兴趣的配置项 `commands`
+- 实现核心模块的通用接口 `ngx_core_module_t` 于 `ctx` 指针中
 
 那么，`ngx_events_module` 核心模块感兴趣的配置项有哪些呢？如下所示，该模块只对 `events{...}` 配置项感兴趣。
 
@@ -69,7 +69,7 @@ static ngx_command_t ngx_events_commandsp[] = {
         0,
         NULL
     },
-    
+
     ngx_null_command
 };
 ```
@@ -270,8 +270,8 @@ EPOLL 适用的典型场景：大量用户 (1M) 与一个进程保持着 TCP 连
 
 由于这 1M 个连接大部分都是不活跃的，因此每次将 1M 个连接通过系统调用传递给 OS 非常低效！EPOLL 在内核中申请了一个简易的文件系统。每次只需创建一个 EPOLL 对象，初始化一个文件系统，然后向文件系统中添加或删除连接即可。EPOLL 的效率非常高，因为：
 
-* 调用 EPOLL 时不再需要传递 1M 个连接
-* 内核也不需要全量遍历所有连接来找出其中的活跃连接
+- 调用 EPOLL 时不再需要传递 1M 个连接
+- 内核也不需要全量遍历所有连接来找出其中的活跃连接
 
 进程调用 `epoll_create()` 函数时，内核会创建一个 `eventpoll` 结构体。其中两个数据结构非常重要：
 
@@ -628,7 +628,7 @@ ngx_epoll_process_events(ngx_cycle_t *cycle, ngx_msec_t timer, ngx_uint_t flags)
         wev = c->write;
 
         if ((revents & EPOLLOUT) && wev->active) {
-            
+
             // 写事件过期
             if (c->fd == -1 || wev->instance != instance) {
 
@@ -689,6 +689,3 @@ ngx_module_t  ngx_epoll_module = {
     NGX_MODULE_V1_PADDING
 };
 ```
-
----
-

@@ -309,7 +309,7 @@ ngx_http_core_access_phase(ngx_http_request_t *r, ngx_http_phase_handler_t *ph)
 
     } else {
         // satisfy any，即在该阶段满足一个处理函数就 ok 了
-        
+
         // 直接执行下一个阶段的第一个处理函数
         if (rc == NGX_OK) {
             r->access_code = 0;
@@ -502,6 +502,3 @@ ngx_http_core_content_phase(ngx_http_request_t *r,
 13. 遍历每个阶段的 `handlers`，将所有的处理函数构成 `phase_engine.handlers[]` 数组，放入全局配置结构体中
 14. 构造 `server{}` 中的虚拟主机通配符 hash 表
 15. 构造监听端口与 server 之间的联系，设置新连接回调函数为 `ngx_http_init_connection()`
-
----
-

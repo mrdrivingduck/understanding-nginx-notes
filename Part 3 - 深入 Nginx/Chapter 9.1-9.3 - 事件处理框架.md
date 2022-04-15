@@ -101,7 +101,7 @@ typedef struct {
     ngx_int_t  (*del_conn)(ngx_connection_t *c, ngx_uint_t flags);
 
     ngx_int_t  (*notify)(ngx_event_handler_pt handler);
-    
+
     // 处理事件，是处理、分发事件的核心
     ngx_int_t  (*process_events)(ngx_cycle_t *cycle, ngx_msec_t timer,
                                  ngx_uint_t flags);
@@ -249,7 +249,7 @@ Nginx 中定义 `ngx_connection_t` 来表示连接。连接默认指的是由客
 struct ngx_connection_s {
     // 连接未使用时，用于充当连接池中的空闲链表指针；连接使用时，具体含义由模块决定
     void               *data;
-    
+
     // 读写事件
     ngx_event_t        *read;
     ngx_event_t        *write;
@@ -391,10 +391,7 @@ struct ngx_peer_connection_s {
 
 `ngx_connection_t` 结构体是 Nginx 在启动阶段就预分配好的，在接收客户端连接时，直接从连接池中获取即可。在 `ngx_cycle_t` 核心结构体中，以下两个成员共同构成连接池：
 
-* `connections` 指向整个连接池数组的头部
-* `free_connections` 指向第一个空闲的 `ngx_connection_t`，这些结构体以 `data` 指针串联为单链表
+- `connections` 指向整个连接池数组的头部
+- `free_connections` 指向第一个空闲的 `ngx_connection_t`，这些结构体以 `data` 指针串联为单链表
 
 Nginx 认定每个连接至少需要一个读事件和一个写事件，因此有多少个连接就分配多少个读写事件。连接、读事件、写事件是三个大小相同的数组，只需要通过同一个 index 就能拿到三个对应的结构体。
-
----
-

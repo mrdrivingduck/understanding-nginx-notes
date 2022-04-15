@@ -14,9 +14,9 @@ Nginx - 2012 Cloud Award for Developer of the Year，世界第二大 Web 服务�
 
 作为 Web 服务器的基本功能：基于 REST 架构风格，以 URI 或 URL 作为沟通依据，通过 HTTP 为浏览器等客户端程序提供各种网络服务。目前 Nginx 与其它 Web 服务器的差别如下：
 
-* Tomcat / Jetty 是重量级服务器，与 Nginx 没有可比性
-* IIS 只能在 Windows OS 上运行
-* Apache 比较中重量级，不支持高并发 (进程量过多)
+- Tomcat / Jetty 是重量级服务器，与 Nginx 没有可比性
+- IIS 只能在 Windows OS 上运行
+- Apache 比较中重量级，不支持高并发 (进程量过多)
 
 Nginx 以性能为王，跨平台，架构适合高并发，并使用当前 OS 中的高效 API 来提高性能。特点：
 
@@ -30,18 +30,18 @@ Nginx 以性能为王，跨平台，架构适合高并发，并使用当前 OS �
 
 ## Nginx 所需软件
 
-* GCC 编译器
-* PCRE (Perl Compatible Regular Expression) 用于解析正则表达式
-* zlib 对 HTTP 包的内容进行 gzip 格式的压缩，以减少网络传输量
-* OpenSSL 用于支持 HTTPS
+- GCC 编译器
+- PCRE (Perl Compatible Regular Expression) 用于解析正则表达式
+- zlib 对 HTTP 包的内容进行 gzip 格式的压缩，以减少网络传输量
+- OpenSSL 用于支持 HTTPS
 
 ## Linux 内核参数优化
 
 可以使得 Nginx 可以拥有更高的性能。比如：
 
-* `file-max` - 进程可以同时打开的最大句柄数
-* `tcp_tw_reuse` - 允许将 `TIME-WAIT` 状态的 socket 重新用于新的 TCP 连接
-* ...
+- `file-max` - 进程可以同时打开的最大句柄数
+- `tcp_tw_reuse` - 允许将 `TIME-WAIT` 状态的 socket 重新用于新的 TCP 连接
+- ...
 
 以及一些与网络协议栈相关的参数。
 
@@ -49,19 +49,16 @@ Nginx 以性能为王，跨平台，架构适合高并发，并使用当前 OS �
 
 除了少量核心代码，Nginx 完全由各个功能模块组成：
 
-* 事件模块
-* 默认编译进 Nginx 中的 HTTP 模块
-* 默认不编译进 Nginx 中的 HTTP 模块
-* 邮件代理服务器相关模块
-* 其它模块
+- 事件模块
+- 默认编译进 Nginx 中的 HTTP 模块
+- 默认不编译进 Nginx 中的 HTTP 模块
+- 邮件代理服务器相关模块
+- 其它模块
 
 ## 命令行控制
 
-* 启动
-* 配置文件路径、启动目录
-* 停止服务 (立刻停止 / 正常处理完当前所有请求再停止)
-* 重读配置文件 (reload)
-* 平滑升级 Nginx (同时启动新旧 master 进程，以 *优雅* 的方式关闭旧版本 Nginx)
-
----
-
+- 启动
+- 配置文件路径、启动目录
+- 停止服务 (立刻停止 / 正常处理完当前所有请求再停止)
+- 重读配置文件 (reload)
+- 平滑升级 Nginx (同时启动新旧 master 进程，以 _优雅_ 的方式关闭旧版本 Nginx)

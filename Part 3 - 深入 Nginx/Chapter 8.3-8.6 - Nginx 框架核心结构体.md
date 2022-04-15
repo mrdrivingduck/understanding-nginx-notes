@@ -23,30 +23,30 @@ struct ngx_listening_s {
     ngx_socket_t fd; // socket 句柄
     struct sockaddr *sockaddr; // 监听地址
     socklen_t socklen; // 地址长度
-    
+
     size_t addr_text_max_len; // IP 地址字符串最大长度
     ngx_str_t addr_text; // 字符串形式的 IP 地址
-    
+
     int type; // socket 类型
-    
+
     int backlog; // backlog 队列
     int rcvbuf; // 内核 socket 接收缓冲区
     int sndbuf; // 内核 socket 发送缓冲区
-    
+
     ngx_connection_handler_pt handler; // 新的 TCP 连接建立成功后的处理方法
-    
+
     void *servers; // 保存当前监听端口对应的所有主机名
-    
+
     // 日志对象指针
     ngx_log_t log;
     ngx_log_t *logp;
-    
+
     size_t pool_size; // 为新的 TCP 连接创建的内存池大小
     ngx_msec_t post_accept_timeout; // 连接建立后，指定时间内没有收到用户数据，则丢弃连接
-    
+
     ngx_listening_t *previous; // 多个结构体由该指针串成单链表
     ngx_connection_t *connection; // 指向对应的连接结构体
-    
+
     unsigned open:1; // 当前监听句柄是否有效的标志位
     unsigned remain:1; // 初始化新的 ngx_cycle_t 结构体 (运行时更新 Nginx) 时，保留原先打开的监听端口
     unsigned ignore:1; // 跳过设置当前结构体中的 socket
@@ -75,31 +75,31 @@ typedef struct ngx_cycle_s ngx_cycle_t;
 
 struct ngx_cycle_s {
     void ****conf_ctx; // 保存所有模块配置项结构体的指针
-    
+
     ngx_pool_t *pool; // 内存池
-    
+
     ngx_log_t *log;
     ngx_log_t new_log;
-    
+
     ngx_uint_t files_n;
     ngx_connection_t **files; // 所有连接
     ngx_connection_t *free_connections; // 可用连接池
     ngx_uint_t free_connection_n;
-    
+
     ngx_queue_t resuable_connections_queue; // 可重复使用的 ngx_connection_t 连接队列
     ngx_array_t listening; // 监听端口 ngx_listening_t 的动态数组
     ngx_array_t pathes; // Nginx 要操作的所有目录，如果不存在则试图创建，如果不成功则启动失败
     ngx_list_t open_files; // Nginx 已经打开的所有文件
     ngx_list_t shared_memory; // 共享内存链表
-    
+
     ngx_uint_t connection_n; // 当前进程的连接总数
     ngx_connection_t *connections; // 当前进程的所有连接对象
-    
+
     ngx_event_t *read_events; // 当前进程的所有读事件对象
     ngx_event_t *write_events; // 当前进程的所有写事件对象
-    
+
     ngx_cycle_t *old_cycle; // 用于引用前一个 ngx_cycle_t 对象的成员
-    
+
     ngx_str_t conf_file; // 配置文件相对于安装目录的路径
     ngx_str_t conf_param; // 需要特殊处理的命令行参数
     ngx_str_t conf_prefix; // 配置文件所在的目录路径
@@ -135,9 +135,9 @@ struct ngx_cycle_s {
 | `USR1`         | `sig_atomic_t ngx_reopen`    | 重新打开所有文件 |
 
 1. 首先检测 `ngx_existing` 标志位是否为 `1`。如果为 `1`，则开始准备关闭 worker 进程 (这个标志由 `ngx_quit` 设置)
-   * 对于正在处理的连接，调用关闭连接的函数
-   * 检查 `ngx_event_timer_rbtree` 是否还有定时事件要执行
-   * 调用所有模块的 `exit_process()` 函数，销毁内存池，退出 worker 进程
+   - 对于正在处理的连接，调用关闭连接的函数
+   - 检查 `ngx_event_timer_rbtree` 是否还有定时事件要执行
+   - 调用所有模块的 `exit_process()` 函数，销毁内存池，退出 worker 进程
 2. 调用 `ngx_process_events_and_timers()` 函数处理定时事件 (事件模块的核心函数)
 3. 检查 `ngx_terminate` 标志位，如果置位，则立刻调用所有模块的 `exit_process()` 函数，并销毁内存池，退出 worker 进程
 4. 检查 `ngx_quit` 标志位，如果置位，则优雅地关闭连接 - 首先将进程的名称修改，然后关闭所有监听的端口，并设置 `ngx_exiting` 标志为 `1`，继续向下执行
@@ -174,12 +174,12 @@ typedef struct {
     ngx_pid_t pid; // 进程 ID
     int status; // 有 waitpid() 获取到的进程状态
     ngx_socket_t channel[2]; // 用于 master 与 worker 之间的通信
-    
+
     ngx_spawn_proc_pt proc; // 子进程的循环执行函数
     void *data; // 函数指针
-    
+
     char *name; // 进程名称
-    
+
     unsigned respawn:1; // 标志位，重新生成子进程
     unsigned just_spawn:1; // 标志位，正在生成子进程
     unsigned detached:1; // 标志位，正在进行父子进程分离
@@ -220,6 +220,3 @@ static void ngx_cache_manager_process_cycle(ngx_cycle_t *cycle, void *data); // 
 16. 接上步，向所有子进程发送 `USR1` 信号，要求子进程重新打开所有文件
 17. 如果 `ngx_change_binary` 标志置位，则平滑升级 Nginx，使用新的子进程启动新版本的 Nginx 程序
 18. 如果 `ngx_noaccept` 标志置位，则向所有子进程发送 `QUIT`，并设置 `ngx_noaccepting` 表示停止接受新的连接，然后返回第 1 步进入下一个循环
-
----
-

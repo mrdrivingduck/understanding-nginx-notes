@@ -48,9 +48,9 @@ http {
 
 可以看到，HTTP 框架支持在一个 `http{}` 块中包含多个 `server{}` 块和多个 `location{}` 块。`ngx_http_module` 核心模块定义了新的模块类型 `NGX_HTTP_MODULE`。这类模块中的 `ctx` 被定义为 `ngx_http_module_t`，是所有 HTTP 模块的通用接口。`ngx_http_module_t` 接口完全围绕着解析配置项来进行。其中包含三类配置项：
 
-* 直接隶属于 `http{}` 块的 main 配置项
-* 直接隶属于 `server{}` 块的 srv 配置项
-* 直接隶属于 `location{}` 块的 loc 配置项
+- 直接隶属于 `http{}` 块的 main 配置项
+- 直接隶属于 `server{}` 块的 srv 配置项
+- 直接隶属于 `location{}` 块的 loc 配置项
 
 ```c
 typedef struct {
@@ -270,6 +270,3 @@ ngx_http_merge_locations(ngx_conf_t *cf, ngx_queue_t *locations,
 ## References
 
 [CSDN - Nginx 配置解析之配置合并](https://blog.csdn.net/apelife/article/details/53574273)
-
----
-

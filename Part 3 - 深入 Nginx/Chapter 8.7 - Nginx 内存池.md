@@ -54,9 +54,9 @@ struct ngx_pool_large_s {
 typedef struct {
     u_char *last; // 未分配的空闲内存首地址
     u_char *end; // 当前小块内存的尾部
-    
+
     ngx_pool_t *next; // 下一个小块内存结构体
-    
+
     ngx_uint_t failed; // 在这个小块内存中分配失败的次数
 } ngx_pool_data_t;
 ```
@@ -92,6 +92,3 @@ struct ngx_pool_cleanup_s {
 11. 遍历 `large` 链表，找到一个 `alloc` 成员为 `NULL` 的项 (最多找 4 个)
 12. 将 `alloc` 成员设置为分配的内存地址并返回，结束
 13. 如果没有空闲的 `ngx_pool_large_t` 项，那么从内存池中分配出新的结构体，并添加到 `large` 链表的头部，返回地址，结束
-
----
-

@@ -18,4 +18,4 @@ This repo contains my notes of reading _Understanding Nginx, Modules Development
 
 ## License
 
-Copyright © 2020, Jingtang Zhang. ([MIT License](LICENSE))
+Copyright © 2020, Jingtang Zhang. ([MIT License](./LICENSE))

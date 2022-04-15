@@ -296,7 +296,7 @@ ngx_mail_proxy_handler(ngx_event_t *ev)
     // s->connection 一定指向 Nginx 与下游的 TCP 连接
     if (c == s->connection) {
         // 收到了下游连接上的事件
-        
+
         if (ev->write) {
             // 下游可写事件
             recv_action = "proxying and reading from upstream";
@@ -322,7 +322,7 @@ ngx_mail_proxy_handler(ngx_event_t *ev)
 
     } else {
         // 收到了上游连接上的事件
-        
+
         if (ev->write) {
             // 上游连接可写
             recv_action = "proxying and reading from client";
@@ -439,7 +439,7 @@ ngx_mail_proxy_handler(ngx_event_t *ev)
         ngx_mail_proxy_close_session(s);
         return;
     }
-    
+
     // 将四个事件再次加入到事件驱动模块中
 
     if (ngx_handle_write_event(dst->write, 0) != NGX_OK) {
@@ -470,6 +470,3 @@ ngx_mail_proxy_handler(ngx_event_t *ev)
     }
 }
 ```
-
----
-

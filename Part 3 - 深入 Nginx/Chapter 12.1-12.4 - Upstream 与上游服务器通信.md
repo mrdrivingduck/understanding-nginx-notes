@@ -10,7 +10,7 @@ Nanjing, Jiangsu, China
 
 ## 12.1 Upstream 机制概述
 
-在 Nginx 中，Nginx 与客户端之间被称为 *下游*，Nginx 与其它服务器之间被称为 *上游*。Nginx 要为下游提供功能，很多时候需要从上游服务器获取素材。所谓的 upstream 机制就是使 HTTP 模块在处理客户端请求时可以访问上游的其它服务器。
+在 Nginx 中，Nginx 与客户端之间被称为 _下游_，Nginx 与其它服务器之间被称为 _上游_。Nginx 要为下游提供功能，很多时候需要从上游服务器获取素材。所谓的 upstream 机制就是使 HTTP 模块在处理客户端请求时可以访问上游的其它服务器。
 
 Upstream 机制由 `ngx_http_upstream_module` 模块实现，它是一个 HTTP 模块。也就是说，如果使用 upstream 机制，客户端的请求必须基于 HTTP。由不同的模块支持 Nginx 访问不同的上游服务器。
 
@@ -930,7 +930,4 @@ ngx_http_upstream_send_request(ngx_http_request_t *r, ngx_http_upstream_t *u,
 }
 ```
 
-而 `ngx_http_upstream_t` 的读事件回调函数 `ngx_http_upstream_process_header()` 负责接收上游服务器的响应。下一节重点讨论
-
----
-
+而 `ngx_http_upstream_t` 的读事件回调函数 `ngx_http_upstream_process_header()` 负责接收上游服务器的响应。下一节重点讨论。

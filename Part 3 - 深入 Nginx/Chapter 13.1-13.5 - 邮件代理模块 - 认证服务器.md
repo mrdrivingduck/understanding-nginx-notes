@@ -12,8 +12,8 @@ Nanjing, Jiangsu, China
 
 邮件代理服务器 **不提供实际的邮件服务器功能**，只负责把客户端的请求代理到上游的邮件服务器中。
 
-* 认证 - 只有经过认证服务器的认证后，Nginx 才会向上游邮件服务器发起通信请求
-* 透传
+- 认证 - 只有经过认证服务器的认证后，Nginx 才会向上游邮件服务器发起通信请求
+- 透传
 
 Nginx 与下游客户端、上游邮件服务器之间都是使用邮件协议，而与认证服务器之间使用的是类 HTTP 协议。Nginx 邮件模块的目的是与上游邮件服务器之间透传 TCP 流。在邮件模块的配置中，直属于 `mail{}` 块的配置称为 main 级别配置，直属于 `server{}` 块下的配置则被称为 srv 配置。
 
@@ -54,7 +54,7 @@ typedef struct {
 
 ```c
 typedef struct ngx_mail_protocol_s  ngx_mail_protocol_t;
-    
+
 struct ngx_mail_protocol_s {
     ngx_str_t                   name; // 邮件模块名称
     in_port_t                   port[4]; // 邮件模块最常监听的四个端口
@@ -133,7 +133,7 @@ typedef struct {
     ngx_str_t              *addr_text;
     // 主机地址
     ngx_str_t               host;
-    
+
     ngx_str_t               smtp_helo;
     ngx_str_t               smtp_from;
     ngx_str_t               smtp_to;
@@ -141,7 +141,7 @@ typedef struct {
     ngx_str_t               cmd;
 
     ngx_uint_t              command;
-    
+
     // 存放来自下游客户端邮件协议的参数
     ngx_array_t             args;
 
@@ -299,8 +299,8 @@ ngx_mail_init_connection(ngx_connection_t *c)
 
 POP3、SMTP 和 IMAP 模块实现的 `init_session()` 中都会调用各自的 `init_protocol()` 函数，接收、解析客户端请求。流程是相似的：
 
-* 反复接收客户端请求，使用状态机解析是否收到了足够的信息
-* 接收到完整的信息后，进入邮件认证阶段
+- 反复接收客户端请求，使用状态机解析是否收到了足够的信息
+- 接收到完整的信息后，进入邮件认证阶段
 
 ```c
 static void
@@ -638,6 +638,3 @@ ngx_mail_auth_http_read_handler(ngx_event_t *rev)
     ngx_mail_session_internal_server_error(s);
 }
 ```
-
----
-

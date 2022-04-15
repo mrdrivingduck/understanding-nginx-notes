@@ -12,15 +12,15 @@ Nanjing, Jiangsu, China
 
 Nginx 框架使用了三种 **传递消息** 的方式：
 
-* 共享内存
-* 套接字
-* 信号
+- 共享内存
+- 套接字
+- 信号
 
 在多个进程访问共享资源时，还需要通过 **进程同步** 使各进程安全地访问资源：
 
-* 原子操作
-* 信号量
-* 文件锁
+- 原子操作
+- 信号量
+- 文件锁
 
 由于 Nginx 地每个 worker 进程都会同时处理千万个请求，所以处理任意一个请求时，都不应该阻塞当前进程。所以应当尽可能避免 worker 进程进入睡眠状态。
 
@@ -82,9 +82,9 @@ ngx_shm_free(ngx_shm_t *shm)
 
 出于 Nginx 的跨平台设计，共享内存有三种实现：
 
-* 不映射文件，使用 `mmap` 分配共享内存
-* 以 `/dev/zero` 文件使用 `mmap` 分配共享内存
-* 使用 `shmget` 分配共享内存
+- 不映射文件，使用 `mmap` 分配共享内存
+- 以 `/dev/zero` 文件使用 `mmap` 分配共享内存
+- 使用 `shmget` 分配共享内存
 
 Nginx 中，各进程间共享数据的主要方式就是使用共享内存。一般由 master 进程创建共享内存，在 master 进程 fork 出 worker 子进程后，所有进程就开始使用这块共享内存了。作为一个 Web 服务器，Nginx 需要统计整个服务器中 HTTP 连接状况的总体功能 (各 worker 子进程的连接状况总和)。Nginx 定义了一些原子变量，用于统计连接状况：
 
@@ -256,23 +256,23 @@ ngx_event_module_init(ngx_cycle_t *cycle)
 
 能够进行原子操作的变量只有整型 (应当是与支持原子操作的指令定义有关)：
 
-* `ngx_atomic_uint_t`
-* `ngx_atomic_t`
+- `ngx_atomic_uint_t`
+- `ngx_atomic_t`
 
 这两种类型都由 `volatile` 关键字修饰，使编译器不会优化它。
 
 对原子变量进行修改，需要使用特定的函数：
 
-* `ngx_atomic_cmp_set()` - 将旧值设置为新值
-* `ngx_atomic_fetch_add()` - 原子加法
+- `ngx_atomic_cmp_set()` - 将旧值设置为新值
+- `ngx_atomic_fetch_add()` - 原子加法
 
 从函数名上来看，显然都使用了 CAS 的思想。Nginx 为了尽可能不让 worker 进程休眠，在同步上一定是尽可能自旋。这两个函数是 Nginx 封装的，因此 Nginx 在实现中还需要考虑相应的 OS 是否支持原子操作。
 
 在 x86 架构下，Nginx 需要通过内联汇编直接进行操作，同时还要指定 `volatile` 关键字防止编译器优化。在汇编中，最终使用 `cmpxchgl` 指令实现 CAS：
 
-* 首先使用 `lock` 指令锁住总线，防止多核并行执行
-* 判断旧值与参数值是否相等
-* 如果旧值与参数值相等，那么将旧值替换为新值
+- 首先使用 `lock` 指令锁住总线，防止多核并行执行
+- 判断旧值与参数值是否相等
+- 如果旧值与参数值相等，那么将旧值替换为新值
 
 另外，使用 `xaddl` 指令可以实现原子加法。
 
@@ -508,14 +508,14 @@ int fcntl(int fd, int cmd, struct flock *lock);
 
 其中：
 
-* `fd` 是一个已经打开的文件句柄
-* `cmd` 表示执行的锁操作
-* `lock` 描述了锁信息
+- `fd` 是一个已经打开的文件句柄
+- `cmd` 表示执行的锁操作
+- `lock` 描述了锁信息
 
 `cmd` 参数在 Nginx 中只会有两个值：
 
-* `F_SETLK` - 在争夺锁时，如果失败，则立刻返回
-* `F_SETLKW` - 在争夺锁时，如果失败，则当前进程阻塞在该函数上，进程转为睡眠状态
+- `F_SETLK` - 在争夺锁时，如果失败，则立刻返回
+- `F_SETLKW` - 在争夺锁时，如果失败，则当前进程阻塞在该函数上，进程转为睡眠状态
 
 而 `lock` 参数用于描述锁信息：
 
@@ -534,9 +534,9 @@ struct flock
 
 Nginx 为文件锁封装了三个函数：
 
-* `ngx_trylock_fd()` - 不会阻塞进程的互斥锁
-* `ngx_lock_fd()` - 会阻塞进程执行，导致 worker 进程进入睡眠
-* `ngx_unlock_fd()` - 释放锁
+- `ngx_trylock_fd()` - 不会阻塞进程的互斥锁
+- `ngx_lock_fd()` - 会阻塞进程执行，导致 worker 进程进入睡眠
+- `ngx_unlock_fd()` - 释放锁
 
 ---
 
@@ -784,7 +784,7 @@ ngx_shmtx_lock(ngx_shmtx_t *mtx)
         }
 
 #if (NGX_HAVE_POSIX_SEM)
-        
+
         // 如果支持信号量，且使用了信号量
         if (mtx->semaphore) {
             // ?
@@ -885,6 +885,3 @@ ngx_shmtx_wakeup(ngx_shmtx_t *mtx)
 #endif
 }
 ```
-
----
-

@@ -375,7 +375,7 @@ ngx_event_pipe(ngx_event_pipe_t *p, ngx_int_t do_write)
             if (rc == NGX_BUSY) {
                 return NGX_OK;
             }
-            
+
             // 以上两个返回值，不会再向下执行
         }
 
@@ -422,7 +422,7 @@ ngx_event_pipe(ngx_event_pipe_t *p, ngx_int_t do_write)
         && p->downstream->data == p->output_ctx)
     {
         wev = p->downstream->write;
-        
+
         // 将下游写事件添加到事件驱动模块中
         if (ngx_handle_write_event(wev, p->send_lowat) != NGX_OK) {
             return NGX_ABORT;
@@ -579,7 +579,7 @@ ngx_event_pipe_read_upstream(ngx_event_pipe_t *p)
                        && !p->downstream->write->delayed)
             {
                 // 下游连接已经就绪，那么向下游发送响应，释放出一些缓冲区
-                
+
                 /*
                  * if the bufs are not needed to be saved in a cache and
                  * a downstream is ready then write the bufs to a downstream
@@ -1051,9 +1051,9 @@ ngx_event_pipe_write_to_downstream(ngx_event_pipe_t *p)
 
 当 Nginx 与 **上游服务器** 交互出错，或正常处理完毕时，需要结束请求。不能直接使用 `ngx_http_finalize_request()` 来结束请求，因为这个函数用于结束 Nginx 与下游客户端的连接，而 Nginx 与上游服务器的连接将会无法释放。Upstream 机制提供了三种可以结束请求的方式：
 
-* 直接调用 `ngx_http_upstream_finalize_request()` 函数
-* 调用 `ngx_http_upstream_cleanup()`
-* 调用 `ngx_http_upstream_next()`
+- 直接调用 `ngx_http_upstream_finalize_request()` 函数
+- 调用 `ngx_http_upstream_cleanup()`
+- 调用 `ngx_http_upstream_next()`
 
 在启动 upstream 机制时，`ngx_http_upstream_cleanup()` 函数会注册到请求的 `cleanup` 链表中。这样，HTTP 请求在结束时就会调用 `ngx_http_upstream_cleanup()`。该函数中，实际上还是通过调用 `ngx_http_upstream_finalize_request()` 来结束请求。
 
@@ -1332,9 +1332,4 @@ ngx_http_upstream_finalize_request(ngx_http_request_t *r,
 }
 ```
 
----
-
 与缓冲区相关的部分并没有看懂 😭
-
----
-

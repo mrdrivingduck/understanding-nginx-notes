@@ -383,8 +383,5 @@ ngx_http_upstream_non_buffered_filter(void *data, ssize_t bytes)
 
 这是处理响应 body 的回调函数。从 Nginx 的视角来看，它的读事件应该是从上游服务器获取响应，写事件应该是向下游客户端转发响应。因此上面函数中设置的读写回调函数才是 `input_filter()` 函数的调用者。根据 Nginx 根据网络环境处理响应的策略，读写回调函数也被分为了两组：
 
-* 不打开缓存 - `ngx_http_upstream_process_non_buffered_upstream()` / `ngx_http_upstream_process_non_buffered_downstream()`
-* 打开缓存 - `ngx_http_upstream_process_upstream()` / `ngx_http_upstream_process_downstream()`
-
----
-
+- 不打开缓存 - `ngx_http_upstream_process_non_buffered_upstream()` / `ngx_http_upstream_process_non_buffered_downstream()`
+- 打开缓存 - `ngx_http_upstream_process_upstream()` / `ngx_http_upstream_process_downstream()`

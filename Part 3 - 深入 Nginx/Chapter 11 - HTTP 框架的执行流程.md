@@ -610,10 +610,10 @@ ngx_http_read_request_header(ngx_http_request_t *r)
 
 HTTP request 的格式：
 
-* Request line
-* Request header
-* 空行
-* Request body
+- Request line
+- Request header
+- 空行
+- Request body
 
 ```http
 GET /uri HTTP/1.1
@@ -1068,6 +1068,3 @@ ngx_http_request_handler(ngx_event_t *ev)
 3. 立刻执行下一个回调函数，还是先将控制权交还给事件驱动模块
 
 对于 11 个阶段，实现了不同的 `checker()` 函数。这些函数的具体代码已经在上一节中分析过。
-
----
-
